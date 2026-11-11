@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideBookingApp - Live Cab Booking & Dispatch Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #e0e7ff;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-card: #1e293b;
+            --light-bg: #f8fafc;
+            --light-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.05);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .swagger-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .swagger-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+
+        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.green { background: #dcfce7; color: #16a34a; }
+        .stat-icon.amber { background: #fef3c7; color: #d97706; }
+        .stat-icon.indigo { background: #ede9fe; color: #7c3aed; }
+        .stat-icon.emerald { background: #d1fae5; color: #059669; }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .stat-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.75rem;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            outline: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Grid Layouts */
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .two-col-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards & Forms */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: var(--accent); color: white; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.8rem; }
+        .btn-block { width: 100%; }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 0.85rem 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f1f5f9;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-available { background: #dcfce7; color: #15803d; }
+        .badge-busy { background: #fee2e2; color: #b91c1c; }
+        .badge-offline { background: #f1f5f9; color: #64748b; }
+        .badge-accepted { background: #e0e7ff; color: #4338ca; }
+        .badge-ongoing { background: #fef3c7; color: #b45309; }
+        .badge-completed { background: #d1fae5; color: #047857; }
+        .badge-rejected { background: #f3f4f6; color: #6b7280; }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            background: var(--dark);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: #065f46; border-left: 5px solid var(--success); }
+        .toast.error { background: #991b1b; border-left: 5px solid var(--danger); }
+        .toast.info { background: #1e1b4b; border-left: 5px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <a href="#" class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div class="brand-text">
+                <h1>RideBookingApp</h1>
+                <span>Enterprise Dispatch & Fleet Management</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <button class="btn btn-primary btn-sm" onclick="refreshAllData()">
+                <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
+            <a href="/swagger-ui.html" target="_blank" class="swagger-link">
+                <i class="fa-solid fa-code"></i> Swagger APIs
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Live Statistics Counter -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-info">
+                    <h3 id="statTotalUsers">0</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fa-solid fa-id-card"></i></div>
+                <div class="stat-info">
+                    <h3 id="statTotalDrivers">0</h3>
+                    <p>Total Drivers</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber"><i class="fa-solid fa-taxi"></i></div>
+                <div class="stat-info">
+                    <h3 id="statAvailableDrivers">0</h3>
+                    <p>Available Cabs</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon indigo"><i class="fa-solid fa-route"></i></div>
+                <div class="stat-info">
+                    <h3 id="statActiveRides">0</h3>
+                    <p>Active Rides</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon emerald"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                <div class="stat-info">
+                    <h3 id="statRevenue">₹0</h3>
+                    <p>Total Revenue</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="switchTab('ridesTab')">
+                <i class="fa-solid fa-compass"></i> Ride Dispatch & Tracking
+            </button>
+            <button class="tab-btn" onclick="switchTab('driversTab')">
+                <i class="fa-solid fa-user-tie"></i> Drivers & Fleet
+            </button>
+            <button class="tab-btn" onclick="switchTab('vehiclesTab')">
+                <i class="fa-solid fa-car"></i> Vehicles
+            </button>
+            <button class="tab-btn" onclick="switchTab('usersTab')">
+                <i class="fa-solid fa-wallet"></i> Users & Wallet
+            </button>
+            <button class="tab-btn" onclick="switchTab('transactionsTab')">
+                <i class="fa-solid fa-receipt"></i> Transactions Ledger
+            </button>
+        </nav>
+
+        <!-- TAB 1: RIDE DISPATCH & TRACKING -->
+        <section id="ridesTab" class="tab-content active">
+            <div class="two-col-grid">
+                <!-- Book Ride Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-location-crosshairs"></i> Book a Ride</h2>
+                    </div>
+                    <form id="bookRideForm" onsubmit="handleBookRide(event)">
+                        <div class="form-group">
+                            <label>Rider (User)</label>
+                            <select id="rideUserSelect" class="form-control" required>
+                                <option value="">Select User...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Assigned Driver</label>
+                            <select id="rideDriverSelect" class="form-control" required>
+                                <option value="">Select Available Driver...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Pickup Location</label>
+                            <input type="text" id="rideSource" class="form-control" placeholder="e.g. Pune Station" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination</label>
+                            <input type="text" id="rideDestination" class="form-control" placeholder="e.g. Hinjewadi Phase 1" required>
+                        </div>
+                        <div style="background:#f8fafc; border-radius:8px; padding:12px; margin-bottom:14px; border:1px solid #e2e8f0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <strong style="font-size:0.8rem; color:#475569;"><i class="fa-solid fa-calculator"></i> Quick Fare Estimator</strong>
+                                <span id="calcFareResult" style="font-size:0.85rem; font-weight:800; color:#4f46e5;">₹0.00</span>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <input type="number" id="calcDistance" class="form-control" placeholder="Dist (km)" min="1" style="flex:1; padding:6px 8px; font-size:0.82rem;">
+                                <select id="calcType" class="form-control" style="flex:1; padding:6px 8px; font-size:0.82rem;">
+                                    <option value="SEDAN">SEDAN</option>
+                                    <option value="XUV">XUV</option>
+                                    <option value="MINI">MINI</option>
+                                    <option value="AUTO">AUTO</option>
+                                    <option value="BIKE">BIKE</option>
+                                </select>
+                                <button type="button" class="btn btn-sm" style="background:#4f46e5; color:white;" onclick="calculateEstimate()"><i class="fa-solid fa-bolt"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimated Fare (₹)</label>
+                            <input type="number" id="rideFare" class="form-control" placeholder="e.g. 350" min="1" step="0.5" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-paper-plane"></i> Book & Dispatch Cab
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Rides Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-list-check"></i> Live Rides Roster</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Driver / Cab</th>
+                                    <th>Route</th>
+                                    <th>Fare</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ridesTableBody">
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading rides...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: DRIVERS & FLEET -->
+        <section id="driversTab" class="tab-content">
+            <div class="two-col-grid">
+                <!-- Add Driver Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-user-plus"></i> Register Driver</h2>
+                    </div>
+                    <form id="addDriverForm" onsubmit="handleAddDriver(event)">
+                        <div class="form-group">
+                            <label>Driver Full Name</label>
+                            <input type="text" id="driverName" class="form-control" placeholder="e.g. Ramesh Kale" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="driverEmail" class="form-control" placeholder="e.g. ramesh@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="text" id="driverPhone" class="form-control" placeholder="e.g. 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Assign Vehicle (Optional)</label>
+                            <select id="driverVehicleSelect" class="form-control">
+                                <option value="">No Vehicle Assigned</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-plus"></i> Add Driver
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Drivers Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-users"></i> Fleet Drivers</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Vehicle No</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Toggle Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="driversTableBody">
+                                <tr><td colspan="7" style="text-align: center;">Loading drivers...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: VEHICLES -->
+        <section id="vehiclesTab" class="tab-content">
+            <div class="two-col-grid">
+                <!-- Add Vehicle Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-car"></i> Register Vehicle</h2>
+                    </div>
+                    <form id="addVehicleForm" onsubmit="handleAddVehicle(event)">
+                        <div class="form-group">
+                            <label>Vehicle Reg Number</label>
+                            <input type="text" id="vehicleRegNo" class="form-control" placeholder="e.g. MH12PQ9999" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Type</label>
+                            <select id="vehicleTypeSelect" class="form-control" required>
+                                <option value="SEDAN">SEDAN</option>
+                                <option value="XUV">XUV</option>
+                                <option value="MINI">MINI</option>
+                                <option value="AUTO">AUTO</option>
+                                <option value="BIKE">BIKE</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-plus"></i> Register Vehicle
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Vehicles Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-taxi"></i> Registered Fleet Vehicles</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehicle No</th>
+                                    <th>Vehicle Type</th>
+                                    <th>Assigned Driver</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vehiclesTableBody">
+                                <tr><td colspan="4" style="text-align: center;">Loading vehicles...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: USERS & WALLET -->
+        <section id="usersTab" class="tab-content">
+            <div class="two-col-grid">
+                <!-- User Registration & Wallet Recharge -->
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-user-plus"></i> Register New User</h2>
+                        </div>
+                        <form id="addUserForm" onsubmit="handleAddUser(event)">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" id="userName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email (OTP will be sent here)</label>
+                                <input type="email" id="userEmail" class="form-control" placeholder="e.g. rahul@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="userPass" class="form-control" placeholder="e.g. Pass@123" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" id="userPhone" class="form-control" placeholder="e.g. 9811223344" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="userAddress" class="form-control" placeholder="e.g. Pune, MH">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-paper-plane"></i> Register & Send OTP
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-money-bill-wave"></i> Recharge Wallet</h2>
+                        </div>
+                        <form id="rechargeWalletForm" onsubmit="handleRechargeWallet(event)">
+                            <div class="form-group">
+                                <label>Select User</label>
+                                <select id="rechargeUserSelect" class="form-control" required>
+                                    <option value="">Choose User...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount (₹)</label>
+                                <input type="number" id="rechargeAmount" class="form-control" placeholder="e.g. 500" min="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Mode</label>
+                                <select id="rechargePaymentMode" class="form-control">
+                                    <option value="UPI">UPI</option>
+                                    <option value="CREDIT">CREDIT</option>
+                                    <option value="CASH">CASH</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">
+                                <i class="fa-solid fa-circle-check"></i> Recharge Wallet
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Users Table & OTP Modal Area -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-users"></i> Users Roster</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Wallet</th>
+                                    <th>Verified</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="6" style="text-align: center;">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TRANSACTIONS LEDGER -->
+        <section id="transactionsTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-receipt"></i> Financial Transactions Ledger</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Txn ID</th>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <tr><td colspan="6" style="text-align: center;">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i id="toastIcon" class="fa-solid fa-info-circle"></i>
+        <span id="toastMsg">Notification message</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Show Toast
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+
+            toast.className = `toast show ${type}`;
+            msg.textContent = message;
+
+            if (type === 'success') icon.className = 'fa-solid fa-circle-check';
+            else if (type === 'error') icon.className = 'fa-solid fa-circle-exclamation';
+            else icon.className = 'fa-solid fa-circle-info';
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // Fetch Stats
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('statTotalUsers').textContent = data.totalUsers;
+                    document.getElementById('statTotalDrivers').textContent = data.totalDrivers;
+                    document.getElementById('statAvailableDrivers').textContent = data.availableDrivers;
+                    document.getElementById('statActiveRides').textContent = data.activeRides;
+                    document.getElementById('statRevenue').textContent = '₹' + data.totalRevenue.toFixed(2);
+                }
+            } catch (err) {
+                console.error("Stats fetch error:", err);
+            }
+        }
+
+        // Fetch Rides
+        async function fetchRides() {
+            try {
+                const res = await fetch('/api/ride/getAll');
+                const tbody = document.getElementById('ridesTableBody');
+                if (res.ok) {
+                    const rides = await res.json();
+                    if (rides.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No rides found. Book a ride to get started!</td></tr>`;
+                        return;
+                    }
+                    tbody.innerHTML = rides.map(r => `
+                        <tr>
+                            <td><strong>#${r.id}</strong></td>
+                            <td>${r.userName || 'User #' + r.userId}</td>
+                            <td>${r.driverName || 'Driver #' + r.driverId} <br><small style="color:var(--text-muted);">${r.vehicleNo || ''}</small></td>
+                            <td><i class="fa-solid fa-location-dot" style="color:var(--primary);"></i> ${r.source} <br><i class="fa-solid fa-flag-checkered" style="color:var(--success);"></i> ${r.destination}</td>
+                            <td><strong>₹${r.fare.toFixed(2)}</strong></td>
+                            <td><span class="badge badge-${r.rideStatus.toLowerCase()}">${r.rideStatus}</span></td>
+                            <td>
+                                ${r.rideStatus === 'ACCEPTED' ? `
+                                    <button class="btn btn-warning btn-sm" onclick="updateRideStatus(${r.id}, 'ONGOING')"><i class="fa-solid fa-play"></i> Start</button>
+                                    <button class="btn btn-danger btn-sm" onclick="cancelRide(${r.id})"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                                ` : ''}
+                                ${r.rideStatus === 'ONGOING' ? `
+                                    <button class="btn btn-success btn-sm" onclick="updateRideStatus(${r.id}, 'COMPLETED')"><i class="fa-solid fa-check-double"></i> Complete</button>
+                                ` : ''}
+                                ${(r.rideStatus === 'COMPLETED' || r.rideStatus === 'REJECTED') ? `
+                                    <small style="color:var(--text-muted); font-weight:600;">Trip Finalized</small>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Drivers
+        async function fetchDrivers() {
+            try {
+                const res = await fetch('/api/driver/getAll');
+                const tbody = document.getElementById('driversTableBody');
+                const rideDriverSelect = document.getElementById('rideDriverSelect');
+                if (res.ok) {
+                    const drivers = await res.json();
+                    // Populate table
+                    if (drivers.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No drivers registered yet.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = drivers.map(d => `
+                            <tr>
+                                <td>#${d.id}</td>
+                                <td><strong>${d.name}</strong><br><small style="color:var(--text-muted);">${d.email}</small></td>
+                                <td>${d.contactNo}</td>
+                                <td>${d.vehicleNo || '<span style="color:var(--text-muted);">None</span>'}</td>
+                                <td>${d.vehicleType || '-'}</td>
+                                <td><span class="badge badge-${d.driverStatus.toLowerCase()}">${d.driverStatus}</span></td>
+                                <td>
+                                    <button class="btn btn-sm ${d.driverStatus === 'AVAILABLE' ? 'btn-danger' : 'btn-success'}"
+                                        onclick="toggleDriverStatus(${d.id}, '${d.driverStatus === 'AVAILABLE' ? 'OFFLINE' : 'AVAILABLE'}')">
+                                        ${d.driverStatus === 'AVAILABLE' ? 'Go Offline' : 'Set Available'}
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+
+                    // Populate Ride booking driver select (only AVAILABLE drivers)
+                    rideDriverSelect.innerHTML = `<option value="">Select Available Driver...</option>` +
+                        drivers.filter(d => d.driverStatus === 'AVAILABLE').map(d => `
+                            <option value="${d.id}">${d.name} (${d.vehicleNo || 'No vehicle'} - ${d.vehicleType || 'Cab'})</option>
+                        `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Vehicles
+        async function fetchVehicles() {
+            try {
+                const res = await fetch('/api/vehicle/getAll');
+                const tbody = document.getElementById('vehiclesTableBody');
+                const select = document.getElementById('driverVehicleSelect');
+                if (res.ok) {
+                    const vehicles = await res.json();
+                    if (vehicles.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No vehicles registered.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = vehicles.map(v => `
+                            <tr>
+                                <td>#${v.id}</td>
+                                <td><strong>${v.vehicleNo}</strong></td>
+                                <td><span class="badge" style="background:#e0e7ff; color:var(--primary);">${v.vehicleType}</span></td>
+                                <td>${v.driverName ? v.driverName + ' (Driver #' + v.driverId + ')' : '<span style="color:var(--text-muted);">Unassigned</span>'}</td>
+                            </tr>
+                        `).join('');
+                    }
+
+                    // Populate unassigned vehicles in driver select
+                    select.innerHTML = `<option value="">No Vehicle Assigned</option>` +
+                        vehicles.filter(v => !v.driverId).map(v => `
+                            <option value="${v.id}">${v.vehicleNo} (${v.vehicleType})</option>
+                        `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Users
+        async function fetchUsers() {
+            try {
+                const res = await fetch('/api/user/getAll');
+                const tbody = document.getElementById('usersTableBody');
+                const rideUserSelect = document.getElementById('rideUserSelect');
+                const rechargeUserSelect = document.getElementById('rechargeUserSelect');
+
+                if (res.ok) {
+                    const users = await res.json();
+                    if (users.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No users registered yet.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = users.map(u => `
+                            <tr>
+                                <td>#${u.id}</td>
+                                <td><strong>${u.name}</strong><br><small style="color:var(--text-muted);">${u.contactNo || ''}</small></td>
+                                <td>${u.email}</td>
+                                <td><strong>₹${u.walletBalance.toFixed(2)}</strong></td>
+                                <td>${u.emailVerified ? '<span class="badge badge-completed">Verified</span>' : '<span class="badge badge-busy">Unverified</span>'}</td>
+                                <td>
+                                    ${!u.emailVerified ? `
+                                        <button class="btn btn-warning btn-sm" onclick="promptVerifyOtp('${u.email}')"><i class="fa-solid fa-key"></i> Verify</button>
+                                        <button class="btn btn-sm" style="background:#e2e8f0; color:#334155; margin-left:4px;" onclick="resendOtp('${u.email}')"><i class="fa-solid fa-rotate-right"></i> Resend</button>
+                                    ` : '<span style="color:var(--success); font-weight:600; font-size:0.82rem;"><i class="fa-solid fa-circle-check"></i> Active</span>'}
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+
+                    // Populate selects
+                    const options = `<option value="">Select User...</option>` +
+                        users.map(u => `<option value="${u.id}">${u.name} (₹${u.walletBalance.toFixed(2)})</option>`).join('');
+
+                    rideUserSelect.innerHTML = options;
+                    rechargeUserSelect.innerHTML = options;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Transactions
+        async function fetchTransactions() {
+            try {
+                const res = await fetch('/api/transaction/getAll');
+                const tbody = document.getElementById('transactionsTableBody');
+                if (res.ok) {
+                    const txns = await res.json();
+                    if (txns.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No financial transactions logged yet.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = txns.map(t => `
+                            <tr>
+                                <td><strong>#${t.id}</strong></td>
+                                <td><small>${t.transactionTime ? new Date(t.transactionTime).toLocaleString() : 'Just now'}</small></td>
+                                <td>${t.userName || 'User #' + t.userId}</td>
+                                <td><span class="badge" style="background:#ede9fe; color:#6d28d9;">${t.transactionType}</span></td>
+                                <td><strong style="color:var(--success);">₹${t.amount.toFixed(2)}</strong></td>
+                                <td>${t.description}</td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Quick Fare Estimator
+        async function calculateEstimate() {
+            const dist = parseFloat(document.getElementById('calcDistance').value);
+            const type = document.getElementById('calcType').value;
+            const src = document.getElementById('rideSource').value.trim() || 'Start';
+            const dest = document.getElementById('rideDestination').value.trim() || 'End';
+
+            if (!dist || dist <= 0) {
+                showToast('Please enter a valid distance in km', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/ride/estimateFare?source=${encodeURIComponent(src)}&destination=${encodeURIComponent(dest)}&vehicleType=${type}&distanceInKm=${dist}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('calcFareResult').textContent = '₹' + data.estimatedFare.toFixed(2);
+                    document.getElementById('rideFare').value = data.estimatedFare;
+                    showToast(`Estimated fare for ${type} (${dist} km): ₹${data.estimatedFare.toFixed(2)}`, 'success');
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error estimating fare: ' + err.message, 'error');
+            }
+        }
+
+        // Book Ride Handler
+        async function handleBookRide(e) {
+            e.preventDefault();
+            const payload = {
+                userId: parseInt(document.getElementById('rideUserSelect').value),
+                driverId: parseInt(document.getElementById('rideDriverSelect').value),
+                source: document.getElementById('rideSource').value.trim(),
+                destination: document.getElementById('rideDestination').value.trim(),
+                fare: parseFloat(document.getElementById('rideFare').value)
+            };
+
+            try {
+                const res = await fetch('/api/ride/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast('Ride booked and accepted successfully! Notification sent.', 'success');
+                    document.getElementById('bookRideForm').reset();
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Failed to book ride: ' + err.message, 'error');
+            }
+        }
+
+        // Update Ride Status
+        async function updateRideStatus(rideId, status) {
+            try {
+                const res = await fetch(`/api/ride/updateStatus/${rideId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rideStatus: status })
+                });
+                if (res.ok) {
+                    showToast(`Ride status transitioned to ${status}!`, 'success');
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Cancel Ride
+        async function cancelRide(rideId) {
+            if (!confirm('Are you sure you want to cancel this ride?')) return;
+            try {
+                const res = await fetch(`/api/ride/cancel/${rideId}`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast('Ride cancelled.', 'info');
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Toggle Driver Status
+        async function toggleDriverStatus(driverId, newStatus) {
+            try {
+                const res = await fetch(`/api/driver/updateStatus/${driverId}/${newStatus}`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast(`Driver status set to ${newStatus}`, 'success');
+                    fetchDrivers();
+                    fetchStats();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Add Driver
+        async function handleAddDriver(e) {
+            e.preventDefault();
+            const vehicleVal = document.getElementById('driverVehicleSelect').value;
+            const payload = {
+                name: document.getElementById('driverName').value.trim(),
+                email: document.getElementById('driverEmail').value.trim(),
+                contactNo: document.getElementById('driverPhone').value.trim(),
+                vehicleId: vehicleVal ? parseInt(vehicleVal) : null
+            };
+
+            try {
+                const res = await fetch('/api/driver/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    showToast('Driver registered successfully!', 'success');
+                    document.getElementById('addDriverForm').reset();
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Add Vehicle
+        async function handleAddVehicle(e) {
+            e.preventDefault();
+            const payload = {
+                vehicleNo: document.getElementById('vehicleRegNo').value.trim().toUpperCase(),
+                vehicleType: document.getElementById('vehicleTypeSelect').value
+            };
+
+            try {
+                const res = await fetch('/api/vehicle/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    showToast('Vehicle registered successfully!', 'success');
+                    document.getElementById('addVehicleForm').reset();
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Add User
+        async function handleAddUser(e) {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('userName').value.trim(),
+                email: document.getElementById('userEmail').value.trim(),
+                password: document.getElementById('userPass').value.trim(),
+                contactNo: document.getElementById('userPhone').value.trim(),
+                address: document.getElementById('userAddress').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast(data.message || 'User registered! Verification OTP sent to email.', 'success');
+                    document.getElementById('addUserForm').reset();
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Recharge Wallet
+        async function handleRechargeWallet(e) {
+            e.preventDefault();
+            const payload = {
+                userId: parseInt(document.getElementById('rechargeUserSelect').value),
+                amount: parseFloat(document.getElementById('rechargeAmount').value),
+                transactionType: document.getElementById('rechargePaymentMode').value
+            };
+
+            try {
+                const res = await fetch('/api/user/rechargeWallet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    showToast('Wallet recharged successfully!', 'success');
+                    document.getElementById('rechargeWalletForm').reset();
+                    refreshAllData();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Prompt Verify OTP
+        async function promptVerifyOtp(email) {
+            const otp = prompt(`Enter the 6-digit OTP sent to ${email}:`);
+            if (!otp) return;
+
+            try {
+                const res = await fetch('/api/auth/verifyEmail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, otp: otp.trim() })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast(data.message || 'Email verified successfully!', 'success');
+                    fetchUsers();
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Verification error: ' + err.message, 'error');
+            }
+        }
+
+        // Resend OTP
+        async function resendOtp(email) {
+            try {
+                const res = await fetch('/api/auth/resendOtp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast(data.message || 'New OTP sent to ' + email, 'success');
+                } else {
+                    const err = await res.text();
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Global Refresh
+        function refreshAllData() {
+            fetchStats();
+            fetchRides();
+            fetchDrivers();
+            fetchVehicles();
+            fetchUsers();
+            fetchTransactions();
+        }
+
+        // Initial Load
+        window.addEventListener('DOMContentLoaded', refreshAllData);
+    </script>
+</body>
+</html>
+

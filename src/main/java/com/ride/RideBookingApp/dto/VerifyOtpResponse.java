@@ -1,0 +1,17 @@
+package com.ride.RideBookingApp.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class VerifyOtpResponse {
+
+	private String message;
+	private String email;
+	private boolean isEmailVerified;
+
+	public VerifyOtpResponse() {
+	}
+}
+
